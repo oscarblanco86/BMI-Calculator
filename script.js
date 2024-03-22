@@ -41,3 +41,12 @@ const form = document.getElementById('bmiForm');
                 }
                 document.getElementById('result').innerText = `Your BMI is ${bmi.toFixed(2)}. You are ${resultText}.`;
             }
+
+let installPrompt = null;
+const installButton = document.querySelector("#install");
+
+window.addEventListener("beforeinstallprompt", (event) => {
+  event.preventDefault();
+  installPrompt = event;
+  installButton.removeAttribute("hidden");
+});
