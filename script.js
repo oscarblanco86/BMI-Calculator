@@ -42,11 +42,26 @@ const form = document.getElementById('bmiForm');
                 document.getElementById('result').innerText = `Your BMI is ${bmi.toFixed(2)}. You are ${resultText}.`;
             }
 
-let installPrompt = null;
-const installButton = document.querySelector("#install");
-
-window.addEventListener("beforeinstallprompt", (event) => {
-  event.preventDefault();
-  installPrompt = event;
-  installButton.removeAttribute("hidden");
-});
+            window.addEventListener('beforeinstallprompt', (event) => {
+                // Prevent Chrome 67 and earlier from automatically showing the prompt
+                event.preventDefault();
+                // Stash the event so it can be triggered later
+                deferredPrompt = event;
+                // Show the button
+                document.getElementById('installButton').style.display = 'block';
+                // Handle installation button click
+                document.getElementById('installButton').addEventListener('click', () => {
+                    // Show the prompt
+                    deferredPrompt.prompt();
+                    // Wait for the user to respond to the prompt
+                    deferredPrompt.userChoice.then((choiceResult) => {
+                        if (choiceResult.outcome === 'accepted') {
+                            console.log('User accepted the install prompt');
+                        } else {
+                            console.log('User dismissed the install prompt');
+                        }
+                        // Reset the deferred prompt variable
+                        deferredPrompt = null;
+                    });
+                });
+            });
